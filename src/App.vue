@@ -1,12 +1,20 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import HeaderMsg from './components/HeaderMsg.vue'
 import Content from './components/Content.vue'
+
+const headerTitle = ref('反恐精英: 全球行动 可视化数据')
+const contentTotal = ref('最高在线人数')
+const contentCurrent = ref('平均在线人数')
 
 </script>
 
 <template>
-  <HeaderMsg />
-  <Content />
+  <HeaderMsg :title="headerTitle" />
+  <Content 
+    :totalText="contentTotal" 
+    :currentText="contentCurrent" 
+  />
 </template>
 
 <style>

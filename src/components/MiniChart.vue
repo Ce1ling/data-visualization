@@ -1,32 +1,67 @@
 <script setup lang="ts">
-const props = defineProps<{
-  list?: Array<{ title: string }>
-}>()
+import { onMounted, onUnmounted, ref } from 'vue'
+import * as echarts from 'echarts'
 
+interface Props {
+  title?: string
+  dynamicData?: number[]
+  option: unknown
+}
+const props = defineProps<Props>()
+
+type Chart = {
+  setOption: (options: echarts.EChartsOption) => void
+}
+const dynamicChartRun = (list: number[], chart: Chart) => {
+  list.forEach((_, i) => {
+    if (Math.random() > 0.9) {
+      list[i] += Math.round(Math.random() * 60000)
+    } else {
+      list[i] += Math.round(Math.random() * 6000)
+    }
+  })
+  chart.setOption({
+    series: {
+      type: 'bar',
+      data: list
+    }
+  })
+}
+
+const chart = ref()
+let dynamicTimer = ref(0)
+onMounted(() => {
+  // 初始化 chart 并设置数据
+  const c = echarts.init(chart.value)
+  c.setOption(props.option as echarts.EChartsOption)
+  window.addEventListener('resize', () => {
+    c.resize()
+  })
+
+  // 如果是动态 chart
+  if (props.dynamicData) {
+    const list = props.dynamicData
+    setTimeout(() => dynamicChartRun(list, c), 0)
+    dynamicTimer.value = setInterval(() => dynamicChartRun(list, c), 3000)
+  }
+})
+onUnmounted(() => {
+  clearInterval(dynamicTimer.value)
+})
 
 </script>
 
 <template>
-  <ul class="mini-chart-list">
-    <li class="mini-chart-item" 
-      v-for="(item, i) in props.list" 
-      :key="i">
-      <h2>{{ item.title }}</h2>
-      <div class="mini-chart-item-chart"></div>
-      <div class="mini-chart-item-footer"></div>
-    </li>
-  </ul>
+  <div class="mini-chart">
+    <h2>{{ props.title }}</h2>
+    <div class="mini-chart-chart" ref="chart"></div>
+    <div class="mini-chart-footer"></div>
+  </div>
 </template>
 
 <style scoped lang="scss">
-.mini-chart-list {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.mini-chart-item {
-  height: 100%;
+.mini-chart {
+  flex: 1;
   background-color: #ffffff20;
   position: relative;
   padding: 10px;
@@ -54,8 +89,8 @@ const props = defineProps<{
     text-align: center;
   }
   &-chart {
-    // max-height: 220px;
-    border: 1px solid red;
+    width: 100%;
+    height: 100%;
   }
   &-footer {
     position: absolute;
