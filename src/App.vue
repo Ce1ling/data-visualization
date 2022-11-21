@@ -30,5 +30,6 @@ body {
   height: inherit;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 </style>
