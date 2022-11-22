@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-import * as echarts from 'echarts'
+import echarts from 'echarts'
 
+type Echarts = any
 interface Props {
   title?: string
   dynamicData?: number[]
-  option: unknown
+  option: Echarts
 }
 const props = defineProps<Props>()
 
 type Chart = {
-  setOption: (options: echarts.EChartsOption) => void
+  setOption: (options: Echarts) => void
 }
 const dynamicChartRun = (list: number[], chart: Chart) => {
   list.forEach((_, i) => {
@@ -33,16 +34,14 @@ let dynamicTimer = ref(0)
 onMounted(() => {
   // 初始化 chart 并设置数据
   const c = echarts.init(chart.value)
-  c.setOption(props.option as echarts.EChartsOption)
-  window.addEventListener('resize', () => {
-    c.resize()
-  })
+  c.setOption(props.option)
+  window.addEventListener('resize', () => c.resize())
 
   // 如果是动态 chart
   if (props.dynamicData) {
     const list = props.dynamicData
     setTimeout(() => dynamicChartRun(list, c), 0)
-    dynamicTimer.value = setInterval(() => dynamicChartRun(list, c), 3000)
+    dynamicTimer.value = setInterval(() => dynamicChartRun(list, c), 1000)
   }
 })
 onUnmounted(() => {

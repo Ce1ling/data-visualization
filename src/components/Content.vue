@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import MiniChart from './MiniChart.vue';
+import GlobeRender from './GlobeRender.vue';
 
 interface Props {
   totalText?: string
@@ -25,8 +26,8 @@ const getDynamicChartData = (len: number) => {
 
 const dynamicData = reactive(getDynamicChartData(3));
 const leftList = reactive([
-  { 
-    title: '现役地图出场率', 
+  {
+    title: '现役地图出场率',
     option: {
       color: ['blueviolet'],
       tooltip: {
@@ -49,7 +50,7 @@ const leftList = reactive([
       yAxis: {
         type: 'value',
         axisLabel: {
-          color: '#ffffff',
+          color: '#fff',
           formatter: '{value}%'
         },
         splitLine: {
@@ -67,9 +68,10 @@ const leftList = reactive([
       ]
     }
   },
-  { 
-    title: '武器使用率(前五)', 
+  {
+    title: '武器使用率(前五)',
     option: {
+      color: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de'],
       title: {
         left: 'center',
         textStyle: {
@@ -110,7 +112,7 @@ const leftList = reactive([
       ]
     }
   },
-  { 
+  {
     title: '当前正在游戏人数',
     option: {
       tooltip: {
@@ -119,18 +121,27 @@ const leftList = reactive([
       grid: {
         top: '5%',
         right: '16%',
-        bottom: '15%',
+        bottom: '10%',
         left: '18%'
       },
       xAxis: {
         max: 'dataMax',
         axisLabel: {
-          color: '#fff',
+          show: false,
+        },
+        axisLine: {
+          show: false
+        },
+        splitLine: {
+          show: false
         }
       },
       yAxis: {
         type: 'category',
         data: ['优先竞技', '非优先竞技', '休闲模式'],
+        axisLine: {
+          show: true
+        },
         axisLabel: {
           color: '#fff'
         },
@@ -151,9 +162,11 @@ const leftList = reactive([
           show: true,
           position: 'right',
           valueAnimation: true,
+          color: '#fff'
         },
         itemStyle: {
-          barBorderRadius: 5
+          barBorderRadius: 5,
+          color: '#5470c6'
         }
       },
       animationDuration: 0,
@@ -165,8 +178,8 @@ const leftList = reactive([
   },
 ])
 const rightList = reactive([
-  { 
-    title: '官方匹配玩家平均段位', 
+  {
+    title: '官方匹配玩家平均段位',
     option: {
       tooltip: {
         show: true,
@@ -218,11 +231,11 @@ const rightList = reactive([
           label: {
             show: true,
             formatter: '{c}%',
-            color: '#fff',  
+            color: '#fff',
           },
           itemStyle: {
             color: (params: { dataIndex: number }) => {
-              const colorList = ['#808080', '#d9cb36', '#367ed9', '#643e3e', '#001aff', '#7635a0', '#ff00e2', '#fa2f2f']
+              const colorList = ['#9e9e9e', '#fac858', '#5470c6', '#3ba272', '#ea7ccc', '#9a60b4', '#fc8452', '#ee6666']
               return colorList[params.dataIndex]
             }
           }
@@ -230,8 +243,8 @@ const rightList = reactive([
       ],
     }
   },
-  { 
-    title: 'CT 与 T 道具使用率', 
+  {
+    title: 'CT 与 T 道具使用率',
     option: {
       color: ['#67F9D8', '#FFE434', '#56A3F1', '#FF917C'],
       legend: {
@@ -301,8 +314,8 @@ const rightList = reactive([
       ]
     }
   },
-  { 
-    title: '玩家在线时段', 
+  {
+    title: '玩家在线时段',
     option: {
       tooltip: {
         trigger: 'item'
@@ -318,12 +331,23 @@ const rightList = reactive([
         data: ['00:00-08:00', '05:00-08:00', '08:00-11:00', '11:00-13:00', '13:00-16:00', '16:00-18:00', '18:00-23:00'],
         axisLabel: {
           color: '#fff'
+        },
+        axisTick: {
+          show: false
         }
       },
       yAxis: {
         type: 'value',
         axisLabel: {
           color: '#fff'
+        },
+        axisLine: {
+          color: '#fff'
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#ffffff2a'
+          }
         }
       },
       series: {
@@ -331,7 +355,10 @@ const rightList = reactive([
         data: [227813, 347561, 486872, 302137, 601734, 583146, 621235],
         max: 10,
         smooth: true,
-        color: 'blueviolet'
+        color: 'blueviolet',
+        label: {
+          color: '#ffffff5a'
+        }
       }
     }
   },
@@ -343,11 +370,8 @@ const rightList = reactive([
   <main class="content">
     <section class="content-left">
       <MiniChart 
-        v-for="(item, i) in leftList" 
-        :key="i" 
-        :title="item.title" 
-        :option="item.option"
-        :dynamic-data="item.dynamicData"
+        v-for="(item, i) in leftList" :key="i" :title="item.title" 
+        :option="item.option" :dynamic-data="item.dynamicData"
       />
     </section>
     <section class="content-middle">
@@ -362,18 +386,17 @@ const rightList = reactive([
         </div>
       </div>
       <div class="middle-body">
-        <div class="global"></div>
         <div class="stars"></div>
         <div class="line"></div>
-        <div class="map-chart"></div>
+        <div class="map-chart">
+          <GlobeRender />
+        </div>
       </div>
     </section>
     <section class="content-right">
       <MiniChart 
-        v-for="(item, i) in rightList" 
-        :key="i" 
-        :title="item.title" 
-        :option="item.option"
+        v-for="(item, i) in rightList" :key="i" 
+        :title="item.title" :option="item.option" 
       />
     </section>
   </main>
@@ -384,6 +407,7 @@ const rightList = reactive([
   from {
     transform: translate(-50%, -50%) rotate(0deg);
   }
+
   to {
     transform: translate(-50%, -50%) rotate(360deg);
   }
@@ -395,6 +419,7 @@ const rightList = reactive([
   padding: 10px;
   height: 100%;
   gap: 10px;
+
   &-left,
   &-right {
     flex: 3;
@@ -402,18 +427,22 @@ const rightList = reactive([
     flex-direction: column;
     gap: 10px;
   }
+
   &-middle {
     flex: 5;
     display: flex;
     flex-direction: column;
     gap: 10px;
+
     .middle-header {
       padding: 10px;
       background-color: #ffffff20;
+
       .title,
       .desc {
         display: flex;
         align-items: center;
+
         p {
           flex: 1;
           text-align: center;
@@ -421,11 +450,14 @@ const rightList = reactive([
           color: #ffd500;
         }
       }
+
       .title {
         position: relative;
         border: #f0f0f01a 1px solid;
+
         p:nth-child(1) {
           position: relative;
+
           &::after {
             content: '';
             width: 2px;
@@ -437,6 +469,7 @@ const rightList = reactive([
             transform: translateY(-50%);
           }
         }
+
         &::before {
           content: '';
           width: 10px;
@@ -448,6 +481,7 @@ const rightList = reactive([
           border-right: transparent;
           border-bottom: transparent;
         }
+
         &::after {
           content: '';
           width: 10px;
@@ -460,49 +494,45 @@ const rightList = reactive([
           border-left: transparent;
         }
       }
+
       .desc {
         margin-top: 10px;
+
         p {
           font-size: 18px;
           color: #f0f0f0;
         }
       }
     }
+
     .middle-body {
       height: 100%;
       padding: 10px;
-      background-color: #ffffff20;
       position: relative;
-      .global {
-        width: 518px;
-        height: 518px;
-        background: url('../assets/global.png') no-repeat 100% 100%;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        opacity: 0.4;
-      }
+      overflow: hidden;
+
       .stars {
         width: 643px;
         height: 643px;
-        background: url('../assets/stars.png');
+        background: url('../assets/stars.png') no-repeat center center/100%;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         animation: rotate360 10s linear infinite;
       }
+
       .line {
         width: 566px;
         height: 566px;
-        background: url('../assets/line.png');
+        background: url('../assets/line.png') no-repeat center center/100%;
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         animation: rotate360 10s linear infinite reverse;
       }
+
       .map-chart {
         width: 100%;
         height: 100%;

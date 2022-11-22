@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import HeaderMsg from './components/HeaderMsg.vue'
 import Content from './components/Content.vue'
 
-const headerTitle = ref('反恐精英: 全球行动 可视化数据')
+const headerTitle = ref('反恐精英: 全球攻势 可视化数据')
 const contentTotal = ref('最高在线人数')
 const contentCurrent = ref('平均在线人数')
 
@@ -17,7 +17,7 @@ const contentCurrent = ref('平均在线人数')
   />
 </template>
 
-<style>
+<style lang="scss">
 * {
   margin: 0;
   padding: 0;
@@ -38,6 +38,12 @@ body {
   height: inherit;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #a5a5a51a;
+  }
 }
 </style>
